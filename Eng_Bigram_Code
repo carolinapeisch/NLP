@@ -1,0 +1,56 @@
+# importing libraries required for analysis
+#! /usr/bin/python
+# -*- coding: utf-8 -*-
+import nltk
+import sys
+import re
+from nltk.corpus import PlaintextCorpusReader
+from nltk.text import Text
+from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
+
+
+# accesses the file you want to use
+file = open('May_Alerts.txt')
+t = file.read().decode('Latin-1').encode('utf-8')
+file.close
+
+#Imports an NLTK Specific tokenizer
+#Strips punctuation
+tokenizer = RegexpTokenizer(r'\w+') 
+tokens = tokenizer.tokenize(t)
+text = nltk.Text(t)
+
+#Removes duplicates
+unique = set(tokens)
+#GIVE LOWERCASE/ONLY LETTERS
+mynewtext = [w.lower() for w in tokens if w.isalpha()]
+#from nltk.corpus import stopwords
+stopwords = open('stopwords.txt','r').read()
+
+nostopwords = [w for w in mynewtext if w not in stopwords]
+
+#MAKE NLTK READY
+finish = nltk.Text(nostopwords)
+
+bigrams = list(nltk.bigrams(nostopwords))
+
+trigrams = list(nltk.trigrams(nostopwords))
+
+# FREQUENCY
+f = open('output_unigrams', 'w')
+for x in set(nostopwords):
+	freqterm = x, '%.10f'%(float(nostopwords.count(x)) / float(len(nostopwords)))
+	print >> f, freqterm
+
+#FREQUENCY PRINTOUT
+f = open('output_bigrams', 'w')
+for x in set(bigrams):
+	freqterm = x, '%.10f'%(float(bigrams.count(x)) / float(len(nostopwords)))
+	print >> f, freqterm
+
+#FREQUENCY PRINTOUT
+f = open('output_trigrams', 'w')
+for x in set(trigrams):
+	freqterm = x, '%.10f'%(float(trigrams.count(x)) / float(len(nostopwords)))
+	print >> f, freqterm	
